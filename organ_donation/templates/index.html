@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Organ Donation And Procurement Network Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        header {
+            background-color: skyblue;
+            color: white;
+            padding: 1em 0;
+            text-align: center;
+        }
+        main {
+            padding: 2em;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        form {
+            margin-bottom: 2em;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5em;
+            font-weight: bold;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 0.5em;
+            margin-bottom: 1em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: skyblue;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 2em;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 0.5em;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>ORGAN DONATION AND PROCUREMENT NETWORK MANAGEMENT</h1>
+</header>
+
+<main>
+    <section>
+        <h2>REGISTER DONOR</h2>
+        <form id="donor-form">
+            <label for="donorName">Name</label>
+            <input type="text" id="donorName" required>
+            
+            <label for="donorAge">Age</label>
+            <input type="number" id="donorAge" required>
+            
+            <label for="donorBloodType">Blood Type</label>
+            <input type="text" id="donorBloodType" required>
+            
+            <label for="donorOrgans">Organs (comma-separated)</label>
+            <input type="text" id="donorOrgans" required>
+            
+            <button type="submit">Register Donor</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>REGISTER RECIPIENT</h2>
+        <form id="recipient-form">
+            <label for="recipientName">Name</label>
+            <input type="text" id="recipientName" required>
+            
+            <label for="recipientAge">Age</label>
+            <input type="number" id="recipientAge" required>
+            
+            <label for="recipientBloodType">Blood Type</label>
+            <input type="text" id="recipientBloodType" required>
+            
+            <label for="neededOrgan">Needed Organ</label>
+            <input type="text" id="neededOrgan" required>
+            
+            <label for="urgency">Urgency (1-10)</label>
+            <input type="number" id="urgency" required>
+            
+            <button type="submit">Register Recipient</button>
+        </form>
+    </section>
+
+    <section>
+        <h2>DONORS LIST</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Blood Type</th>
+                    <th>Organs</th>
+                </tr>
+            </thead>
+            <tbody id="donor-list-body">
+                <!-- Donor list will be populated here -->
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>RECIPIENTS LIST</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Blood Type</th>
+                    <th>Needed Organ</th>
+                    <th>Urgency</th>
+                </tr>
+            </thead>
+            <tbody id="recipient-list-body">
+                <!-- Recipient list will be populated here -->
+            </tbody>
+        </table>
+    </section>
+
+    <section>
+        <h2>MATCH ORGAN</h2>
+        <button id="match-organ-button">Match Organ</button>
+        <div id="match-result">
+            <!-- Match result will be displayed here -->
+        </div>
+    </section>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const donorForm = document.getElementById('donor-form');
+        const recipientForm = document.getElementById('recipient-form');
+        const matchOrganButton = document.getElementById('match-organ-button');
+
+        // Sample Data for Donors and Recipients (Mock Data)
+        let donors = [];
+        let recipients = [];
+
+        // Handle donor form submission
+        donorForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const donor = {
+                donorName: document.getElementById('donorName').value,
+                donorAge: document.getElementById('donorAge').value,
+                donorBloodType: document.getElementById('donorBloodType').value,
+                donorOrgans: document.getElementById('donorOrgans').value
+            };
+            donors.push(donor);
+            displayDonors();
+            donorForm.reset();
+        });
+
+        // Handle recipient form submission
+        recipientForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const recipient = {
+                recipientName: document.getElementById('recipientName').value,
+                recipientAge: document.getElementById('recipientAge').value,
+                recipientBloodType: document.getElementById('recipientBloodType').value,
+                neededOrgan: document.getElementById('neededOrgan').value,
+                urgency: document.getElementById('urgency').value
+            };
+            recipients.push(recipient);
+            displayRecipients();
+            recipientForm.reset();
+        });
+
+        // Display donor list
+        function displayDonors() {
+            const donorListBody = document.getElementById('donor-list-body');
+            donorListBody.innerHTML = '';
+            donors.forEach(donor => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${donor.donorName}</td>
+                    <td>${donor.donorAge}</td>
+                    <td>${donor.donorBloodType}</td>
+                    <td>${donor.donorOrgans}</td>
+                `;
+                donorListBody.appendChild(row);
+            });
+        }
+
+        // Display recipient list
+        function displayRecipients() {
+            const recipientListBody = document.getElementById('recipient-list-body');
+            recipientListBody.innerHTML = '';
+            recipients.forEach(recipient => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${recipient.recipientName}</td>
+                    <td>${recipient.recipientAge}</td>
+                    <td>${recipient.recipientBloodType}</td>
+                    <td>${recipient.neededOrgan}</td>
+                    <td>${recipient.urgency}</td>
+                `;
+                recipientListBody.appendChild(row);
+            });
+        }
+
+        // Handle match organ button click
+        matchOrganButton.addEventListener('click', () => {
+            const matchResult = document.getElementById('match-result');
+            matchResult.innerHTML = '';
+
+            recipients.forEach(recipient => {
+                const matchedDonors = donors.filter(donor => {
+                    return donor.donorBloodType === recipient.recipientBloodType &&
+                           donor.donorOrgans.toLowerCase().includes(recipient.neededOrgan.toLowerCase());
+                });
+
+                if (matchedDonors.length > 0) {
+                    matchedDonors.forEach(donor => {
+                        const matchDiv = document.createElement('div');
+                        matchDiv.innerHTML = `
+                            <p>Recipient: ${recipient.recipientName} (Needed Organ: ${recipient.neededOrgan})</p>
+                            <p>Donor: ${donor.donorName} (Organs Available: ${donor.donorOrgans})</p>
+                            <hr>
+                        `;
+                        matchResult.appendChild(matchDiv);
+                    });
+                } else {
+                    const noMatchDiv = document.createElement('div');
+                    noMatchDiv.innerHTML = `<p>No matching donor found for recipient: ${recipient.recipientName}</p>`;
+                    matchResult.appendChild(noMatchDiv);
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>
